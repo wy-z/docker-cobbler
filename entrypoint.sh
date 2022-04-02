@@ -6,17 +6,29 @@ set -e
 # Init configuration
 #
 
-if [[ -z "$SERVER_IP" ]]; then
-    echo "env 'SERVER_IP' is required."
+SERVER="${SERVER:-${SERVER_IP_V4}}"
+if [ -z "$SERVER" ]; then
+    echo "env 'SERVER' is required."
     exit 1
-elif [[ -z "$ROOT_PASSWORD" ]]; then
+fi
+if [ -z "$SERVER_IP_V4" ] && [ -z "$SERVER_IP_V6" ]; then
+    echo "env ['SERVER_IP_V4', 'SERVER_IP_V6'] require at least one."
+    exit 1
+fi
+if [ -z "$ROOT_PASSWORD" ]; then
     echo "env 'ROOT_PASSWORD' is required."
     exit 1
 fi
-PASSWORD=$(openssl passwd -1 "$ROOT_PASSWORD")
-sed -i "s/^server: 127.0.0.1/server: $SERVER_IP/g" /etc/cobbler/settings.yaml
-sed -i "s/^next_server_v4: 127.0.0.1/next_server_v4: $SERVER_IP/g" /etc/cobbler/settings.yaml
-sed -i "s#^default_password.*#default_password_crypted: \"$PASSWORD\"#g" /etc/cobbler/settings.yaml
+
+sed -i "s/^server: 127.0.0.1/server: $SERVER/g" /etc/cobbler/settings.yaml
+if [ -n "${SERVER_IP_V4}" ]; then
+    sed -i "s/^next_server_v4: 127.0.0.1/next_server_v4: $SERVER_IP_V4/g" /etc/cobbler/settings.yaml
+fi
+if [ -n "${SERVER_IP_V6}" ]; then
+    sed -i "s/^next_server_v6: ::1/next_server_v6: $SERVER_IP_V6/g" /etc/cobbler/settings.yaml
+fi
+CRYPTED_PASSWORD=$(openssl passwd -1 "$ROOT_PASSWORD")
+sed -i "s#^default_password.*#default_password_crypted: \"$CRYPTED_PASSWORD\"#g" /etc/cobbler/settings.yaml
 
 #
 # Init data volumes
