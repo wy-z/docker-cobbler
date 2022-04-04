@@ -18,7 +18,8 @@ COPY $COBBLER_RPM /$COBBLER_RPM
 RUN set -ex \
   && dnf install -y epel-release \
   && dnf install -y /$COBBLER_RPM \
-  && dnf install -y dhcp-server pykickstart yum-utils debmirror git ipxe-bootimgs \
+  && dnf install -y dhcp-server pykickstart yum-utils debmirror git \
+          ipxe-bootimgs \ # loaders
   && dnf clean all \
   # fix debian repo support
   && sed -i "s/^@dists=/# @dists=/g" /etc/debmirror.conf \
