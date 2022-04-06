@@ -18,7 +18,7 @@ COPY $COBBLER_RPM /$COBBLER_RPM
 RUN set -ex \
   && dnf install -y epel-release \
   && dnf install -y /$COBBLER_RPM \
-  && dnf install -y dhcp-server pykickstart yum-utils debmirror git \
+  && dnf install -y dhcp-server pykickstart yum-utils debmirror git rsync-daemon \
           ipxe-bootimgs \
   && dnf clean all \
   # fix debian repo support
@@ -27,7 +27,7 @@ RUN set -ex \
   # backup data volumes
   && for v in $DATA_VOLUMES; do mv $v ${v}.save; done \
   # enable services
-  && systemctl enable cobblerd httpd dhcpd tftp
+  && systemctl enable cobblerd httpd dhcpd tftp rsyncd
 
 # DHCP Server
 EXPOSE 67
