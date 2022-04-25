@@ -19,7 +19,7 @@ RUN set -ex \
   && dnf install -y epel-release \
   && dnf install -y /$COBBLER_RPM \
   && dnf install -y dhcp-server pykickstart yum-utils debmirror git rsync-daemon \
-          ipxe-bootimgs \
+          ipxe-bootimgs shim grub2-efi-x64-modules \
   && dnf clean all \
   # fix debian repo support
   && sed -i "s/^@dists=/# @dists=/g" /etc/debmirror.conf \
@@ -33,6 +33,8 @@ RUN set -ex \
 EXPOSE 67
 # TFTP
 EXPOSE 69
+# Rsync
+EXPOSE 873
 # Web
 EXPOSE 80
 # Cobbler
