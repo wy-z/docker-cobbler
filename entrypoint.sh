@@ -20,6 +20,7 @@ if [ -z "$ROOT_PASSWORD" ]; then
     exit 1
 fi
 
+# set server config
 sed -i "s/^server: 127.0.0.1/server: $SERVER/g" /etc/cobbler/settings.yaml
 if [ -n "${SERVER_IP_V4}" ]; then
     sed -i "s/^next_server_v4: 127.0.0.1/next_server_v4: $SERVER_IP_V4/g" /etc/cobbler/settings.yaml
@@ -29,6 +30,11 @@ if [ -n "${SERVER_IP_V6}" ]; then
 fi
 CRYPTED_PASSWORD=$(openssl passwd -1 "$ROOT_PASSWORD")
 sed -i "s#^default_password.*#default_password_crypted: \"$CRYPTED_PASSWORD\"#g" /etc/cobbler/settings.yaml
+# set menu title
+if [ -n "${MENU_TITLE}" ]; then
+    sed -ri "s#^MENU TITLE Cobbler.+#MENU TITLE $MENU_TITLE#g" /etc/cobbler/boot_loader_conf/pxe_menu.template
+    sed -ri "s#^MENU TITLE Cobbler.+#MENU TITLE $MENU_TITLE#g" /etc/cobbler/iso/buildiso.template
+fi
 
 #
 # Init data volumes
@@ -55,6 +61,6 @@ usermod -aG root apache
 (
     sleep 6
     cobbler sync
+    tail -n +1 -f /var/log/cobbler/cobbler.log
 ) &
-
 exec /usr/sbin/init
