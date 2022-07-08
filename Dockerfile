@@ -1,6 +1,6 @@
 FROM rockylinux/rockylinux:8
 
-ENV COBBLER_RPM cobbler-3.3.2-1.el8.noarch.rpm
+ENV COBBLER_RPM cobbler-3.3.3-1.el8.noarch.rpm
 ENV DATA_VOLUMES "/var/lib/cobbler /var/www/cobbler /var/lib/dhcpd"
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; \
@@ -16,6 +16,14 @@ VOLUME [ "/sys/fs/cgroup" ]
 
 COPY $COBBLER_RPM /$COBBLER_RPM
 RUN set -ex \
+  # Use USTC mirror if necessary
+  # && sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+  #   -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.ustc.edu.cn/rocky|g' \
+  #   -i.bak \
+  #   /etc/yum.repos.d/Rocky-AppStream.repo \
+  #   /etc/yum.repos.d/Rocky-BaseOS.repo \
+  #   /etc/yum.repos.d/Rocky-Extras.repo \
+  #   /etc/yum.repos.d/Rocky-PowerTools.repo \
   && dnf install -y epel-release \
   && dnf install -y /$COBBLER_RPM \
   && dnf install -y dhcp-server pykickstart yum-utils debmirror git rsync-daemon \
