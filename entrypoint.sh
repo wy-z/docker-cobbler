@@ -48,13 +48,6 @@ for v in $DATA_VOLUMES; do
 done
 
 #
-# Fix https://github.com/cobbler/cobbler/issues/3016
-#
-
-chmod g+rw /etc/cobbler /etc/cobbler/settings.yaml /etc/cobbler/modules.conf
-usermod -aG root apache
-
-#
 # Boot cobbler
 #
 
