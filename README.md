@@ -4,16 +4,16 @@ A Cobbler container image. Up-to-date, easy to maintain, and easy to use.
 
 ## Version
 
-3.3.2
+3.3.3
 
 ## Docker hub
 
-[weiyang/docker-cobbler:3.3.2](https://hub.docker.com/r/weiyang/docker-cobbler)
+[weiyang/docker-cobbler:3.3.3](https://hub.docker.com/r/weiyang/docker-cobbler)
 
 ## How to build
 
 ```
-docker build -t cobbler:3.3.2 .
+docker build -t cobbler:3.3.3 .
 ```
 
 ## How to use
@@ -22,7 +22,7 @@ docker build -t cobbler:3.3.2 .
 docker run --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
 	-e SERVER_IP_V4=127.0.0.1 -e ROOT_PASSWORD=Password \
 	-v $PWD/lib:/var/lib/cobbler -v $PWD/www:/var/www/cobbler -v $PWD/dhcpd:/var/lib/dhcpd \
-	cobbler:3.3.2
+	cobbler:3.3.3
 ```
 
 ### Environments
